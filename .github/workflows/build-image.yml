@@ -1,12 +1,9 @@
-name: STAGING Deploy Images to GHCR
-
-env:
-  DOTNET_VERSION: '6.0.x'
+name: Build Firecrawl image
 
 on:
   push:
     branches:
-      - mog/webscraper-refactor
+      - quasible
   workflow_dispatch:
 
 jobs:
@@ -26,7 +23,13 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: 'Build Inventory Image'
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: 'Build Image'
+        env:
+          SHA_SHORT: ${{ steps.vars.outputs.sha_short }}
         run: |
-          docker build . --tag ghcr.io/mendableai/firecrawl-staging:latest
-          docker push ghcr.io/mendableai/firecrawl-staging:latest
+          docker build . --tag ghcr.io/right-on-skill/firecrawl:${{ steps.vars.outputs.sha_short }}
+          docker push ghcr.io/right-on-skill/firecrawl:${{ steps.vars.outputs.sha_short }}

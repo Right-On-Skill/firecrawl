@@ -1,0 +1,35 @@
+name: Build Playwright Image
+
+on:
+  push:
+    branches:
+      - quasible
+  workflow_dispatch:
+
+jobs:
+  push-playwright-image:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './apps/playwright'
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@main
+
+      - name: 'Login to GitHub Container Registry'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: 'Build Image'
+        env:
+          SHA_SHORT: ${{ steps.vars.outputs.sha_short }}
+        run: |
+          docker build . --tag ghcr.io/right-on-skill/firecrawl-playwright:${{ steps.vars.outputs.sha_short }}
+          docker push ghcr.io/right-on-skill/firecrawl-playwright:${{ steps.vars.outputs.sha_short }}
