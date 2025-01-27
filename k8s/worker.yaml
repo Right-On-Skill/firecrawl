@@ -12,15 +12,17 @@ spec:
       labels:
         app: worker
     spec:
-      imagePullSecrets:
-        - name: docker-registry-secret
+      # imagePullSecrets:
+      #   - name: ghcr-credentials
       containers:
         - name: worker
-          image: ghcr.io/winkk-dev/firecrawl:latest
+          image: ghcr.io/right-on-skill/firecrawl:latest
           imagePullPolicy: Always
-          args: [ "pnpm", "run", "workers" ]
+          env:
+            - name: FLY_PROCESS_GROUP
+              value: worker
           envFrom:
             - configMapRef:
                 name: firecrawl-config
-          #- secretRef:
-          #    name: firecrawl-secret
+            - secretRef:
+                name: firecrawl-secret

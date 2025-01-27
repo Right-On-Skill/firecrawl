@@ -12,11 +12,9 @@ spec:
       labels:
         app: api
     spec:
-      imagePullSecrets:
-        - name: docker-registry-secret
       containers:
         - name: api
-          image: ghcr.io/winkk-dev/firecrawl:latest
+          image: ghcr.io/right-on-skill/firecrawl:latest
           imagePullPolicy: Always
           args: [ "pnpm", "run", "start:production" ]
           ports:
@@ -24,8 +22,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: firecrawl-config
-          #- secretRef:
-          #    name: firecrawl-secret
+            - secretRef:
+                name: firecrawl-secret
           livenessProbe:
             httpGet:
               path: /v0/health/liveness
