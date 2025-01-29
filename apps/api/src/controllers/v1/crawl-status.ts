@@ -244,15 +244,16 @@ export async function crawlStatusController(
 
   let totalCount = jobIDs.length;
 
-  if (totalCount === 0) {
-    const x = await supabase_service
-      .from('firecrawl_jobs')
-      .select('*', { count: 'exact', head: true })
-      .eq("crawl_id", req.params.jobId)
-      .eq("success", true)
+  // FIXME(gm): skip the database count since this requires supabase to be setup
+  // if (totalCount === 0) {
+  //   const x = await supabase_service
+  //     .from('firecrawl_jobs')
+  //     .select('*', { count: 'exact', head: true })
+  //     .eq("crawl_id", req.params.jobId)
+  //     .eq("success", true)
     
-    totalCount = x.count ?? 0;
-  }
+  //   totalCount = x.count ?? 0;
+  // }
 
   res.status(200).json({
     success: true,

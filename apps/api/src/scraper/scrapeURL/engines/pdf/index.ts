@@ -21,6 +21,7 @@ async function scrapePDFWithRunPodMU(
   timeToRun: number | undefined,
   base64Content: string,
 ): Promise<PDFProcessorResult> {
+  
   meta.logger.debug("Processing PDF document with RunPod MU", {
     tempFilePath,
   });
@@ -74,6 +75,16 @@ export async function scrapePDF(
   meta: Meta,
   timeToRun: number | undefined,
 ): Promise<EngineScrapeResult> {
+  
+  // FIXME(gm): PDF engine is broken, so we're just returning an empty response for now
+  
+  return {
+    url: meta.url,
+    statusCode: 200,
+    html: "",
+    markdown: "",
+  }
+
   if (!meta.options.parsePDF) {
     const file = await fetchFileToBuffer(meta.url, {
       headers: meta.options.headers,
